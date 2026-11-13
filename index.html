@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#f6f3ee" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#16161a" media="(prefers-color-scheme: dark)">
+  <title>Major System Practice</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <h1>Major Practice</h1>
+      <button id="keyBtn" class="btn ghost" type="button" aria-haspopup="dialog">Key</button>
+    </header>
+
+    <div class="levels" role="radiogroup" aria-label="Difficulty">
+      <button type="button" class="level" data-level="easy" role="radio">Easy</button>
+      <button type="button" class="level" data-level="medium" role="radio">Medium</button>
+      <button type="button" class="level" data-level="hard" role="radio">Hard</button>
+    </div>
+
+    <div class="controls">
+      <div class="field">
+        <span class="label" id="countLabel">Words</span>
+        <div class="stepper">
+          <button type="button" id="countDown" class="btn small" aria-label="Fewer words">−</button>
+          <span id="count" aria-live="polite">4</span>
+          <button type="button" id="countUp" class="btn small" aria-label="More words">+</button>
+        </div>
+      </div>
+      <div class="field" id="paoField">
+        <span class="label">Mode</span>
+        <button type="button" id="paoBtn" class="btn small toggle" aria-pressed="false">PAO</button>
+      </div>
+      <form id="seedForm" class="field seed" autocomplete="off">
+        <label class="label" for="seed">Seed</label>
+        <div class="seedrow">
+          <input id="seed" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="24">
+          <button type="submit" class="btn small">Go</button>
+          <button type="button" id="randomSeed" class="btn small" aria-label="Random seed" title="Random seed">⚄</button>
+        </div>
+      </form>
+    </div>
+
+    <section class="card" aria-live="polite">
+      <div class="meta"><span id="meta"></span><span class="hint">tap a word to peek</span></div>
+      <div id="words" class="words"></div>
+    </section>
+
+    <form id="guessForm" class="guess" autocomplete="off">
+      <input id="guess" type="text" inputmode="numeric" pattern="[0-9 ]*" placeholder="Your number" aria-label="Your number">
+      <button type="submit" class="btn primary">Check</button>
+    </form>
+    <p id="feedback" class="feedback" role="status"></p>
+
+    <div class="actions">
+      <button type="button" id="solveBtn" class="btn">Solve</button>
+      <button type="button" id="nextBtn" class="btn primary">Next →</button>
+    </div>
+
+    <p class="stats"><span id="stats"></span> · <button type="button" id="resetStats" class="link">reset</button></p>
+  </main>
+
+  <dialog id="keyDialog" class="sheet">
+    <div class="sheet-head">
+      <h2 id="keyTitle">Key</h2>
+      <button type="button" id="closeKey" class="btn small" aria-label="Close">✕</button>
+    </div>
+
+    <div data-for="easy">
+      <p>Your code: each word is one digit. Only the <b>first letter</b> counts.</p>
+      <table class="keytable">
+        <tr><td>0</td><td>Z</td><td>zebra</td></tr>
+        <tr><td>1</td><td>T</td><td>tiger</td></tr>
+        <tr><td>2</td><td>N</td><td>nest</td></tr>
+        <tr><td>3</td><td>M</td><td>moon</td></tr>
+        <tr><td>4</td><td>R</td><td>rabbit</td></tr>
+        <tr><td>5</td><td>L</td><td>lion</td></tr>
+        <tr><td>6</td><td>J</td><td>jar</td></tr>
+        <tr><td>7</td><td>K</td><td>kite</td></tr>
+        <tr><td>8</td><td>F</td><td>fish</td></tr>
+        <tr><td>9</td><td>P</td><td>pig</td></tr>
+      </table>
+    </div>
+
+    <div data-for="pao">
+      <h3>PAO: Person · Action · Object</h3>
+      <p id="paoIntro"></p>
+      <div id="paoKey"></div>
+    </div>
+
+    <div data-for="medium hard">
+      <p>Traditional sounds. Go by how a word <i>sounds</i>, not its spelling. Vowels and <b>w h y</b> are ignored; double letters count once.</p>
+      <table class="keytable">
+        <tr><td>0</td><td>s, z, soft c</td><td>sauce</td></tr>
+        <tr><td>1</td><td>t, d, th</td><td>toad</td></tr>
+        <tr><td>2</td><td>n</td><td>nun</td></tr>
+        <tr><td>3</td><td>m</td><td>mummy</td></tr>
+        <tr><td>4</td><td>r</td><td>roar</td></tr>
+        <tr><td>5</td><td>l</td><td>lily</td></tr>
+        <tr><td>6</td><td>j, sh, ch, soft g, zh</td><td>judge</td></tr>
+        <tr><td>7</td><td>k, hard c, hard g, q, ck</td><td>cake</td></tr>
+        <tr><td>8</td><td>f, v, ph</td><td>five</td></tr>
+        <tr><td>9</td><td>p, b</td><td>baby</td></tr>
+      </table>
+    </div>
+
+    <div data-for="hard">
+      <h3>Slanted spellings</h3>
+      <ul class="rules">
+        <li><b>Silent letters count for nothing</b>: <i>k</i>nife, com<i>b</i>, cas<i>t</i>le, <i>w</i>rist, ca<i>l</i>f.</li>
+        <li><b>gh</b> is f (laugh = 58) or silent (night = 21).</li>
+        <li><b>ph</b> is f: phone = 82.</li>
+        <li><b>x</b> is k + s: box = 970. At the start it's z: xylophone = 0582.</li>
+        <li><b>ti, ci, ss, s</b> can sound like sh/zh, which is 6: nation = 262, vision = 862.</li>
+        <li><b>ch</b> can be k, which is 7: choir = 74, school = 075.</li>
+        <li><b>cc</b> before e/i is k + s: accident = 70121.</li>
+        <li><b>dge</b> is a single j: bridge = 946.</li>
+      </ul>
+    </div>
+    <p class="tiny">Shortcuts: <b>K</b> key · <b>N</b> next · <b>S</b> solve · <b>P</b> PAO · <b>1/2/3</b> level</p>
+  </dialog>
+
+  <script src="words.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
